@@ -49,4 +49,50 @@ class Perceptron:
             The final binary output (0.0 or 1.0) of the neuron.
         """
         weighted_sum = np.dot(self.weight.T, x) + self.bias
-        return Perceptron.activation_function(z=weighted_sum)
+        return self.activation_function(z=weighted_sum)
+
+class SigmoidNeuron:
+    """
+    Implementes the core logic of an artificial neuron using Sigmoid activation function.
+
+    This neuron resolves the limitations of the binary Perceptron by providin a continuous,
+    dufferentiable output.
+    """
+
+    def __init__(self, num_inputs: int):
+        """
+        Initialized the neuron parameters (weights and bias) randomly.
+
+        Args:
+            num_imputs: The number of inputs the neuron will receives.
+        """
+        self.weights: 'NDArray[np.float64]' = np.random.randn(num_inputs, 1)
+        self.bias: 'NDArray[np.float64]' = np.random.randn(1, 1)
+
+    def activation_function(self, z: Union[float | 'NDArray[np.float64]']) -> float:
+        """
+        Calculates the Sigmoid activation function.
+
+        Args:
+            z: The weighted input (w * x + b).
+
+        Returns:
+            The output activation (a), a continuous value between 0 and 1.
+        """
+        sigmoid: 'NDArray[np.float64]' = 1/(1 + np.exp(-z))
+        return sigmoid.item() if isinstance(sigmoid, np.ndarray) else sigmoid
+    
+    def forward(self, x: 'NDArray[np.float64]') -> float:
+        """
+        Performs the forward propagation step for the neuron.
+
+        Calculates the weighted input and aplies the sigmoid activation.
+
+        Args:
+            x: The input vector (N, 1).
+
+        Returns:
+            The final activation output (a) of the neuron.
+        """
+        weighted_input = np.dot(self.weights.T, x) + self.bias
+        return self.activation_function(z=weighted_input)
