@@ -66,3 +66,16 @@ class Network:
             nabla_b[-l] = error_L
             nabla_w[-l] = np.dot(error_L, activations[-l-1].T)
         return (nabla_b, nabla_w)
+    
+    def update_mini_batch(self, mini_batch, eta):
+        """
+        x
+        """
+        nabla_b = [np.zeros(shape=b.shape) for b in self.bias]
+        nabla_w = [np.zeros(shape=w.shape) for w in self.weight]
+        for x, y in mini_batch:
+            delta_b, delta_w = self.backprop(x, y)
+            nabla_b = [nb_b + del_b for nb_b, del_b in zip(nabla_b, delta_b)]
+            nabla_w = [nb_w + del_w for nb_w, del_w in zip(nabla_w, delta_w)]
+        self.weight = [w-(eta/len(mini_batch)) * nb_w for w, nb_w in zip(self.weight, nabla_w)]
+        self.bias = [b-(eta/len(mini_batch)) * nb_b for b, nb_b in zip(self.bias, nabla_b)]
