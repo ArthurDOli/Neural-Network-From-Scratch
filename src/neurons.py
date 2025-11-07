@@ -21,7 +21,7 @@ class Perceptron:
         self.weight: 'NDArray[np.float64]' = np.random.randn(num_inputs, 1)
         self.bias: 'NDArray[np.float64]' = np.random.randn(1, 1)
 
-    def activation_function(self, z: Union[float | 'NDArray[np.float64]']) -> float:
+    def activation_function(self, z: Union[float, 'NDArray[np.float64]']) -> float:
         """
         The Perceptron's non-smooth binary step activation function.
 
@@ -69,7 +69,7 @@ class SigmoidNeuron:
         self.weights: 'NDArray[np.float64]' = np.random.randn(num_inputs, 1)
         self.bias: 'NDArray[np.float64]' = np.random.randn(1, 1)
 
-    def activation_function(self, z: Union[float | 'NDArray[np.float64]']) -> float:
+    def activation_function(self, z: Union[float, 'NDArray[np.float64]']) -> float:
         """
         Calculates the Sigmoid activation function.
 

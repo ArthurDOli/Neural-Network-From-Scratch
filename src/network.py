@@ -3,19 +3,20 @@ from typing import TYPE_CHECKING, Union
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 from neurons import SigmoidNeuron
+import random
 
 def sigmoid(z):
     """
     x
     """
-    return 1/(1 + np.exp(-z))
+    return 1/(1 + np.exp(-np.clip(z, -709, 709)))
 
 def sigmoid_prime(z):
     """
     x
     """
-    sigmoid = sigmoid(z)
-    return sigmoid * (1 - sigmoid)
+    sig = sigmoid(z)
+    return sig * (1 - sig)
 
 class Network:
     """
@@ -28,7 +29,7 @@ class Network:
         """
         self.sizes = sizes
         self.num_layers = len(sizes)
-        self.weight: list['NDArray[np.float64]'] = [np.random.randn(y, x) for x, y in zip(self.sizes[:-1], self.sizes[1:])]
+        self.weight: list['NDArray[np.float64]'] = [np.random.randn(y, x)/np.sqrt(x) for x, y in zip(self.sizes[:-1], self.sizes[1:])]
         self.bias: list['NDArray[np.float64]'] = [np.random.randn(y, 1) for y in self.sizes[1:]]
 
     def feedforward(self, a: 'NDArray[np.float64]'):
@@ -79,3 +80,30 @@ class Network:
             nabla_w = [nb_w + del_w for nb_w, del_w in zip(nabla_w, delta_w)]
         self.weight = [w-(eta/len(mini_batch)) * nb_w for w, nb_w in zip(self.weight, nabla_w)]
         self.bias = [b-(eta/len(mini_batch)) * nb_b for b, nb_b in zip(self.bias, nabla_b)]
+
+    def evaluate(self, test_data):
+        """
+        x
+        """
+        results = 0
+        for x, y in test_data:
+            prevision = self.feedforward(x)
+            prevision_index = np.argmax(prevision)
+            if prevision_index == y:
+                results += 1
+        return results
+
+    def SGD(self, training_data, epochs, mini_batch_size, eta, test_data=None):
+        """
+        x
+        """
+        for epoch in range(epochs):
+            random.shuffle(training_data)
+            mini_batches = [training_data[x:x+mini_batch_size] for x in range(0, len(training_data), mini_batch_size)]
+            for batch in mini_batches:
+                self.update_mini_batch(batch, eta)
+            if test_data:
+                total = self.evaluate(test_data)
+                print(f'Epoch {epoch}: {total}/{len(test_data)}')
+            else:
+                print(f'Epoch {epoch} complete')
