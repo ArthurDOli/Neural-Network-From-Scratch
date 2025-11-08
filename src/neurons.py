@@ -79,7 +79,7 @@ class SigmoidNeuron:
         Returns:
             The output activation (a), a continuous value between 0 and 1.
         """
-        sigmoid= 1/(1 + np.exp(-z))
+        sigmoid = 1/(1 + np.exp(-z))
         return sigmoid.item() if isinstance(sigmoid, np.ndarray) else sigmoid
     
     def forward(self, x: 'NDArray[np.float64]') -> float:
